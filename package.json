@@ -1,0 +1,22 @@
+{
+  "name": "todo-list-js",
+  "homepage": "https://github.com/Pavel-Baturin/todo-list-js",
+  "scripts": {
+    "start": "parcel src/*.html",
+    "build": "parcel build src/*.html --public-url /todo-list-js/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Pavel-Baturin/todo-list-js"
+  },
+  "dependencies": {
+    "modern-normalize": "^1.1.0"
+  },
+  "devDependencies": {
+    "@parcel/transformer-sass": "^2.6.0",
+    "parcel": "^2.6.0",
+    "parcel-reporter-clean-dist": "^1.0.4",
+    "posthtml-include": "^1.7.4"
+  },
+  "browserslist": "> 0.5%, last 2 versions, not dead"
+}
