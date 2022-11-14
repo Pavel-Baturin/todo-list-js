@@ -1,7 +1,7 @@
-import { inputRef, buttonRef, listRef } from './refs.js';
+import { inputRef, addButtonRef, listRef } from './refs.js';
 
 listRef.addEventListener('click', onListClick);
-buttonRef.addEventListener('click', handlerClick);
+addButtonRef.addEventListener('click', handlerClick);
 
 let todoList = [];
 
@@ -11,10 +11,16 @@ if (localStorage.getItem('todo')) {
 }
 
 function onListClick(e) {
+  if (e.target.tagName === 'BUTTON') {
+    e.target.addEventListener('click', onDeleteButtonClick);
+    const currentElIdx = Number(e.target.getAttribute('idx'));
+    onDeleteButtonClick(currentElIdx);
+  }
+
   if (e.target.tagName !== 'LI') {
     return;
   }
-  
+
   const currentElId = Number(e.target.getAttribute('id'));
   todoList.map(todo => {
     if (currentElId === todo.id) {
@@ -23,16 +29,23 @@ function onListClick(e) {
       createMarkup();
     }
   });
-  
 }
 
 function handlerClick() {
   const value = inputRef.value.trim();
   if (!value) {
+    alert('Поле не повинно бути пустим');
     return;
+  }
+  
+  const uniqueTodo = todoList.map(todo => todo.value).includes(value);
+  
+  if (uniqueTodo) {
+    return alert('Такий запис вже існує');
   }
   saveData(value);
   createMarkup();
+  inputRef.value = '';
 }
 
 function saveData(value) {
@@ -48,16 +61,22 @@ function saveData(value) {
 
 function createMarkup() {
   if (!todoList.length) {
+    listRef.innerHTML = '';
     return;
   }
-  const markup = todoList
+  listRef.innerHTML = todoList
     .map(
       toDo =>
         `<li id="${toDo.id}" class="item ${toDo.checked ? 'checked' : ''}">${
           toDo.value
-        } <button class="close">Delete</button></li>`
+        } <button idx="${toDo.id}" class="delete">Delete</button></li>`
     )
     .join('');
+}
 
-  listRef.innerHTML = markup;
+function onDeleteButtonClick(todoId) {
+  const deleteToDo = todoList.filter(todo => todo.id !== todoId);
+  todoList = deleteToDo;
+  localStorage.setItem('todo', JSON.stringify(todoList));
+  createMarkup();
 }
